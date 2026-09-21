@@ -1,0 +1,841 @@
+<title>Syracuse Farmers Markets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Karla:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Syracuse Farmers Markets — design tokens and components.
+   Every color is a token declared in the bare :root below, then redefined for
+   the two dark states. Never write a raw color inside a component rule. */
+
+:root{
+  --paper:#F2F0F1; --surface:#FFFFFF; --surface-2:#F8F5F6;
+  --ink:#1F181C; --ink-2:#584B51; --muted:#8B7C83; --line:#E0D9DC; --line-2:#EFEAEC;
+  --accent:#8A2749; --accent-2:#B4405F; --accent-wash:#F7E8ED; --on-accent:#FFFFFF;
+  --open:#17704A; --open-wash:#DFEFE7;
+  --soon:#8F6011; --soon-wash:#F7EDDA;
+  --off:#8B7C83; --off-wash:#EDE9EA;
+  --shadow:0 1px 2px rgba(31,24,28,.05), 0 8px 24px -16px rgba(31,24,28,.28);
+  --r:10px;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Karla","Helvetica Neue",Arial,sans-serif;
+  --mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#15100F; --surface:#1E1719; --surface-2:#261E21;
+    --ink:#F2EBEE; --ink-2:#C6B6BC; --muted:#9C8B92; --line:#342830; --line-2:#2A2027;
+    --accent:#EA7D9B; --accent-2:#F2A6BA; --accent-wash:#3A222C; --on-accent:#1A1214;
+    --open:#5FCB97; --open-wash:#16332A;
+    --soon:#E2AC55; --soon-wash:#362A16;
+    --off:#9C8B92; --off-wash:#2A2126;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15100F; --surface:#1E1719; --surface-2:#261E21;
+  --ink:#F2EBEE; --ink-2:#C6B6BC; --muted:#9C8B92; --line:#342830; --line-2:#2A2027;
+  --accent:#EA7D9B; --accent-2:#F2A6BA; --accent-wash:#3A222C; --on-accent:#1A1214;
+  --open:#5FCB97; --open-wash:#16332A;
+  --soon:#E2AC55; --soon-wash:#362A16;
+  --off:#9C8B92; --off-wash:#2A2126;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+html{color-scheme:light dark}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+img{max-width:100%}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+h1,h2,h3{margin:0;text-wrap:balance}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* ---- masthead ---------------------------------------------------------- */
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(34px,6.2vw,54px);line-height:1.02;letter-spacing:-.018em;margin-top:8px}
+h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.deck{color:var(--ink-2);max-width:58ch;margin-top:10px;font-size:16px}
+
+.live{margin-top:26px;display:flex;flex-wrap:wrap;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.live > div{background:var(--surface);padding:14px 16px;flex:1 1 180px}
+.live .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.live .v{font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.01em;margin-top:3px;line-height:1.15;
+  font-variant-numeric:tabular-nums}
+.live .v small{font-family:var(--body);font-size:13px;font-weight:500;color:var(--ink-2);display:block;letter-spacing:0;
+  margin-top:2px;line-height:1.35}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--open);margin-right:7px;vertical-align:middle;
+  box-shadow:0 0 0 0 var(--open);animation:pulse 2.4s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(0,0,0,0)}100%{box-shadow:0 0 0 0 rgba(0,0,0,0)}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+
+/* ---- tabs -------------------------------------------------------------- */
+.tabs{display:flex;gap:4px;margin-top:30px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{background:none;border:0;padding:9px 13px 11px;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);
+  border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tab .n{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:5px}
+
+/* ---- filters ----------------------------------------------------------- */
+.filters{display:flex;flex-wrap:wrap;gap:16px 20px;align-items:flex-end;margin-top:20px;padding:14px 16px;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.fgroup{display:flex;flex-direction:column;gap:7px}
+.flabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:4px 11px;font-size:13px;
+  font-weight:600;cursor:pointer;color:var(--ink-2);transition:background .12s,color .12s,border-color .12s}
+.chip:hover{border-color:var(--accent-2)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.chip.day{min-width:46px;text-align:center;font-family:var(--mono);font-weight:500}
+.fgroup select{font:inherit;font-size:13px;font-weight:600;padding:5px 9px;border-radius:7px;border:1px solid var(--line);
+  background:var(--surface-2);color:var(--ink)}
+.reset{margin-left:auto;background:none;border:0;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;padding:6px 2px}
+.reset:hover{color:var(--accent)}
+
+/* ---- season groups + cards --------------------------------------------- */
+.group{margin-top:36px}
+.ghead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.ghead h2{font-family:var(--display);font-size:23px;font-weight:600;letter-spacing:-.012em}
+.ghead .gmeta{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.ghead p{margin:0;color:var(--ink-2);font-size:14px;flex:1 1 260px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;overflow:hidden;position:relative;--stripe:var(--off)}
+.card::before{content:"";position:absolute;top:0;bottom:0;left:0;width:3px;background:var(--stripe)}
+.card.is-open{--stripe:var(--open)}
+.card.is-soon{--stripe:var(--soon)}
+.chead{display:flex;gap:10px;align-items:flex-start;padding:15px 16px 12px 18px;text-align:left;background:none;border:0;
+  cursor:pointer;width:100%}
+.chead:hover .cname{color:var(--accent)}
+.cname{font-family:var(--display);font-size:17.5px;font-weight:600;line-height:1.22;letter-spacing:-.01em;flex:1}
+.cwhere{font-size:13px;color:var(--muted);margin-top:3px;font-weight:400;font-family:var(--body);display:block}
+.status{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  padding:4px 8px;border-radius:6px;white-space:nowrap;flex:none}
+.s-open{background:var(--open-wash);color:var(--open)}
+.s-soon{background:var(--soon-wash);color:var(--soon)}
+.s-off{background:var(--off-wash);color:var(--muted)}
+.cbody{padding:0 16px 14px 18px;display:flex;flex-direction:column;gap:11px}
+.hours{font-family:var(--mono);font-size:13px;color:var(--ink);letter-spacing:-.01em}
+.next{font-size:13.5px;color:var(--ink-2)}
+.next b{color:var(--ink);font-weight:700}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:700;letter-spacing:.02em;padding:3px 7px;border-radius:5px;background:var(--accent-wash);
+  color:var(--accent);border:1px solid transparent}
+.badge.no{background:none;color:var(--muted);border-color:var(--line);font-weight:500}
+
+.sbar .track{position:relative;height:7px;border-radius:4px;background:var(--off-wash)}
+.sbar .fill{position:absolute;top:0;bottom:0;border-radius:4px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
+.sbar .today{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);border-radius:2px}
+.sbar .lab{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:10.5px;color:var(--muted);
+  margin-top:5px;letter-spacing:.03em}
+.sbar .lab b{color:var(--ink-2);font-weight:500}
+
+.details{border-top:1px solid var(--line-2);padding:13px 16px 15px 18px;display:grid;gap:9px;background:var(--surface-2)}
+.row{display:grid;grid-template-columns:74px 1fr;gap:10px;font-size:13.5px;align-items:baseline}
+.row .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.row a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-wash)}
+.row a:hover{border-bottom-color:var(--accent)}
+.slots{font-family:var(--mono);font-size:12.5px;line-height:1.6}
+
+/* ---- week view --------------------------------------------------------- */
+.weekbar{display:flex;align-items:center;gap:10px;margin-top:24px}
+.weekbar h2{font-family:var(--display);font-size:20px;font-weight:600;flex:1;letter-spacing:-.01em}
+.nav{border:1px solid var(--line);background:var(--surface);border-radius:8px;width:32px;height:32px;cursor:pointer;
+  font-size:15px;line-height:1;color:var(--ink-2);flex:none}
+.nav:hover{border-color:var(--accent);color:var(--accent)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:var(--r);overflow:hidden;margin-top:12px}
+.day{background:var(--surface);padding:10px 9px 12px;min-height:132px;display:flex;flex-direction:column;gap:7px}
+.day.today{background:var(--accent-wash)}
+.dhead{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
+.dname{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.day.today .dname{color:var(--accent)}
+.dnum{font-family:var(--display);font-size:17px;font-weight:600;line-height:1}
+.mchip{background:var(--surface-2);border:1px solid var(--line-2);border-left:2px solid var(--accent-2);border-radius:6px;
+  padding:6px 7px;text-align:left;cursor:pointer;width:100%;display:block}
+.day.today .mchip{background:var(--surface)}
+.mchip:hover{border-color:var(--accent);border-left-color:var(--accent)}
+.mchip .mn{font-size:12px;font-weight:700;line-height:1.2;display:block}
+.mchip .mt{font-family:var(--mono);font-size:11px;color:var(--ink-2);display:block;margin-top:2px}
+.dempty{font-size:12px;color:var(--muted);font-style:italic}
+@media (max-width:760px){.week{grid-template-columns:1fr}.day{min-height:0}}
+
+/* ---- season timeline --------------------------------------------------- */
+.tlwrap{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;
+  overflow-x:auto}
+.tl{min-width:660px;display:grid;grid-template-columns:210px 1fr;gap:0 14px;align-items:center;row-gap:7px}
+.tlname{font-size:13px;font-weight:700;text-align:right;line-height:1.25}
+.tlname span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:400}
+.tlrow{position:relative;height:22px;background:var(--surface-2);border-radius:5px;border:1px solid var(--line-2)}
+.tlbar{position:absolute;top:2px;bottom:2px;border-radius:4px;background:linear-gradient(90deg,var(--accent-2),var(--accent));
+  display:flex;align-items:center;padding-left:7px;color:var(--on-accent);font-family:var(--mono);font-size:10.5px;
+  overflow:hidden;white-space:nowrap}
+.tlbar.yr{background:var(--open);color:var(--on-accent)}
+.tlaxis{position:relative;height:18px;margin-top:2px}
+.tlaxis span{position:absolute;font-family:var(--mono);font-size:10px;color:var(--muted);transform:translateX(-50%)}
+.tlgrid{position:absolute;inset:0;pointer-events:none}
+.tlgrid i{position:absolute;top:0;bottom:0;width:1px;background:var(--line-2)}
+.tlnow{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);z-index:2;border-radius:2px}
+.tlkey{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--ink-2);align-items:center}
+.tlkey i{display:inline-block;width:15px;height:8px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+/* ---- map --------------------------------------------------------------- */
+.maprow{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-top:20px;align-items:start}
+@media (max-width:840px){.maprow{grid-template-columns:1fr}}
+.mapbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.mapbox svg{display:block;width:100%;height:auto;max-width:100%}
+.pin{cursor:pointer}
+.maplist{display:flex;flex-direction:column;gap:8px}
+.mapitem{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;text-align:left;
+  cursor:pointer;display:flex;gap:10px;align-items:center;width:100%}
+.mapitem:hover{border-color:var(--accent)}
+.mapitem .idx{font-family:var(--mono);font-size:11px;color:var(--on-accent);background:var(--accent);border-radius:50%;
+  width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;flex:none;font-weight:500}
+.mi-n{font-size:13.5px;font-weight:700;line-height:1.25;flex:1}
+.mi-s{font-family:var(--mono);font-size:11px;color:var(--muted);display:block;font-weight:400;margin-top:2px}
+
+/* ---- misc -------------------------------------------------------------- */
+.empty{padding:40px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r);margin-top:24px}
+.note{font-size:12.5px;color:var(--muted);margin-top:12px;max-width:72ch}
+.boot{padding:44px 20px;text-align:center;color:var(--muted)}
+.boot code{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:6px;padding:2px 7px;color:var(--ink);display:inline-block;margin-top:8px}
+footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+[hidden]{display:none!important}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow" id="eyebrow">Loading…</p>
+  <h1 id="headline">Farmers Markets</h1>
+  <p class="deck" id="deck"></p>
+
+  <div class="boot" id="boot">Loading market data…</div>
+
+  <div id="app" hidden>
+    <div class="live" id="live"></div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-view="markets">Markets<span class="n" id="cnt"></span></button>
+      <button class="tab" role="tab" aria-selected="false" data-view="week">This week</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="season">Season timeline</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="map">Where they are</button>
+    </div>
+
+    <div class="filters" id="filters">
+      <div class="fgroup">
+        <span class="flabel" id="lbl-day">Open on</span>
+        <div class="chips" id="dayChips" role="group" aria-labelledby="lbl-day"></div>
+      </div>
+      <div class="fgroup">
+        <span class="flabel" id="lbl-ben">Accepts</span>
+        <div class="chips" role="group" aria-labelledby="lbl-ben">
+          <button class="chip" type="button" id="f-snap" data-ben="snap" aria-pressed="false">SNAP / EBT</button>
+          <button class="chip" type="button" id="f-fmnp" data-ben="fmnp" aria-pressed="false">WIC &amp; Senior FMNP</button>
+          <button class="chip" type="button" id="f-fcc" data-ben="fcc" aria-pressed="false">Fresh Connect checks</button>
+        </div>
+      </div>
+      <div class="fgroup">
+        <span class="flabel" id="lbl-now">Right now</span>
+        <div class="chips" role="group" aria-labelledby="lbl-now">
+          <button class="chip" type="button" id="f-open" data-open="1" aria-pressed="false">Open this minute</button>
+        </div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel" for="sortSel">Sort</label>
+        <select id="sortSel">
+          <option value="season">By season length</option>
+          <option value="next">By next opening</option>
+          <option value="closing">By closing date</option>
+          <option value="name">A–Z</option>
+        </select>
+      </div>
+      <button class="reset" id="reset" type="button">Clear filters</button>
+    </div>
+
+    <div id="view-markets"></div>
+
+    <div id="view-week" hidden>
+      <div class="weekbar">
+        <button class="nav" id="wprev" type="button" aria-label="Previous week">←</button>
+        <h2 id="wtitle">This week</h2>
+        <button class="nav" id="wnext" type="button" aria-label="Next week">→</button>
+      </div>
+      <div class="week" id="week"></div>
+      <p class="note">A day only lists a market if it is both scheduled that day and inside its season. Step forward or back to watch the week fill in and empty out.</p>
+    </div>
+
+    <div id="view-season" hidden>
+      <div class="tlwrap">
+        <div class="tl" id="tl"></div>
+        <div class="tlkey">
+          <span><i style="background:var(--open)"></i>Year-round</span>
+          <span><i style="background:linear-gradient(90deg,var(--accent-2),var(--accent))"></i>Seasonal window</span>
+          <span><i style="background:var(--ink);width:3px;height:13px"></i>Today</span>
+        </div>
+      </div>
+      <p class="note">Published operating windows for the season. Syracuse runs two markets through the winter, reaches all nine in August, and is back down to two by November 2.</p>
+    </div>
+
+    <div id="view-map" hidden>
+      <div class="maprow">
+        <div class="mapbox" id="mapbox"></div>
+        <div class="maplist" id="maplist"></div>
+      </div>
+      <p class="note">Positions plotted from each market's coordinates — a schematic of how they sit relative to each other, not a street map. Open a market's card for a directions link.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span id="credit"></span>
+    <span>Hours shift late in the season; call ahead in October.</span>
+  </footer>
+</div>
+<script>
+window.__MARKET_DATA__ = {"generated":"2026-09-16","seasonYear":2026,"source":{"file":"Summer-Fall_Farmers'_Markets_in_New_York_State_20260913.csv","county":"Onondaga","publisher":"NYS Department of Agriculture & Markets","dataset":"Summer & Fall Farmers' Markets in New York State"},"markets":[{"id":"central-ny-sat-regional-market","name":"Central NY Regional Market — Saturday","place":"2100 Park Street","city":"Syracuse","zip":"13208","hoursText":"Sat 7am–2pm","schedule":[{"days":[6],"open":7.0,"close":14.0}],"season":null,"seasonText":"Year-round","seasonCode":"YR","benefits":{"snap":true,"fmnp":true,"fccIssued":true,"fccAccepted":true},"contact":{"name":"Taylor Beresovoy","phone":"3154228647","url":"https://www.cnyregionalmarket.com/"},"lat":43.07269,"lng":-76.16835},{"id":"central-ny-sun-regional-market","name":"Central NY Regional Market — Sunday","place":"2100 Park Street","city":"Syracuse","zip":"13208","hoursText":"Sun 7am–2pm","schedule":[{"days":[0],"open":7.0,"close":14.0}],"season":null,"seasonText":"Year-round","seasonCode":"YR","benefits":{"snap":true,"fmnp":true,"fccIssued":true,"fccAccepted":true},"contact":{"name":"Taylor Beresovoy","phone":"3154228647","url":"https://www.cnyregionalmarket.com/"},"lat":43.07269,"lng":-76.16835},{"id":"central-ny-thu-regional-market","name":"Central NY Regional Market — Thursday","place":"2100 Park Street","city":"Syracuse","zip":"13208","hoursText":"Thu 7am–1pm","schedule":[{"days":[4],"open":7.0,"close":13.0}],"season":{"start":[5,7],"end":[10,29]},"seasonText":"May 7 – Oct 29","seasonCode":"P/M","benefits":{"snap":true,"fmnp":true,"fccIssued":true,"fccAccepted":true},"contact":{"name":"Taylor Beresovoy","phone":"3154228647","url":"https://www.cnyregionalmarket.com/"},"lat":43.07269,"lng":-76.16835},{"id":"syracuse-eastside-farmers-market","name":"Syracuse Eastside Farmers' Market","place":"Westcott Community Center, 826 Euclid Ave","city":"Syracuse","zip":"13210","hoursText":"Wed 2pm–6pm","schedule":[{"days":[3],"open":14.0,"close":18.0}],"season":{"start":[6,3],"end":[10,28]},"seasonText":"Jun 3 – Oct 28","seasonCode":"M","benefits":{"snap":false,"fmnp":true,"fccIssued":false,"fccAccepted":true},"contact":{"name":"Jessica Ginney","phone":"3154002075","url":"https://westcottcc.org/syracuse-eastside-farmers-market"},"lat":43.03662,"lng":-76.1192},{"id":"downtown-syracuse-farmers-market","name":"Downtown Syracuse Farmers' Market","place":"Clinton Square, Clinton St and Water St","city":"Syracuse","zip":"13202","hoursText":"Tue 8am–2pm","schedule":[{"days":[2],"open":8.0,"close":14.0}],"season":{"start":[6,9],"end":[10,13]},"seasonText":"Jun 9 – Oct 13","seasonCode":"M","benefits":{"snap":true,"fmnp":true,"fccIssued":false,"fccAccepted":true},"contact":{"name":"Charles McFadden","phone":"3154228284","url":"http://www.downtownsyracuse.com"},"lat":43.05054,"lng":-76.15354},{"id":"brady-farm-ford-ave-farm-stand","name":"Brady Farm — Ford Ave Stand","place":"150 Ford Ave","city":"Syracuse","zip":"13207","hoursText":"Wed–Fri 9am–4pm · Sat 9am–1pm","schedule":[{"days":[3,4,5],"open":9.0,"close":16.0},{"days":[6],"open":9.0,"close":13.0}],"season":{"start":[6,10],"end":[11,1]},"seasonText":"Jun 10 – Nov 1","seasonCode":"M","benefits":{"snap":false,"fmnp":true,"fccIssued":false,"fccAccepted":true},"contact":{"name":"Jessi Lyons","phone":"3154204521","url":"http://www.bradyfarm.org"},"lat":43.01343,"lng":-76.15644},{"id":"brady-farm-salina-st-farm-stand","name":"Brady Farm — Salina St Stand","place":"4141 South Salina Street","city":"Syracuse","zip":"13205","hoursText":"Sat 8am–1pm","schedule":[{"days":[6],"open":8.0,"close":13.0}],"season":{"start":[6,20],"end":[10,17]},"seasonText":"Jun 20 – Oct 17","seasonCode":"M","benefits":{"snap":false,"fmnp":true,"fccIssued":false,"fccAccepted":true},"contact":{"name":"Jessi Lyons","phone":"3154204521","url":"http://www.bradyfarm.org"},"lat":43.00915,"lng":-76.14226},{"id":"urban-delights-farm-stand","name":"Urban Delights Farm Stand","place":"112 Bellevue Avenue","city":"Syracuse","zip":"13204","hoursText":"Wed 1pm–5pm","schedule":[{"days":[3],"open":13.0,"close":17.0}],"season":{"start":[7,16],"end":[11,1]},"seasonText":"Jul 16 – Nov 1","seasonCode":"M","benefits":{"snap":false,"fmnp":true,"fccIssued":false,"fccAccepted":true},"contact":{"name":"Desaree Dixie","phone":"3154280070","url":""},"lat":43.03372,"lng":-76.15626},{"id":"delaney-farms-farm-stand","name":"Delaney Farms Farm Stand","place":"4545 Kasson Rd.","city":"Syracuse","zip":"13215","hoursText":"Daily 9am–6pm","schedule":[{"days":[0,1,2,3,4,5,6],"open":9.0,"close":18.0}],"season":{"start":[8,1],"end":[10,31]},"seasonText":"Aug 1 – Oct 31","seasonCode":"M","benefits":{"snap":false,"fmnp":true,"fccIssued":false,"fccAccepted":true},"contact":{"name":"Marc Delaney","phone":"3154691668","url":""},"lat":42.9876,"lng":-76.2609}],"unparsed":[]};
+</script>
+<script>
+/* Syracuse Farmers Markets — view layer.
+ *
+ * Data comes from data/markets.json, built by scripts/build_data.py.
+ * In the bundled single-file build, scripts/bundle.py injects the same JSON as
+ * window.__MARKET_DATA__ so the page needs no server and no fetch.
+ *
+ * Everything on screen is derived from the browser's clock at render time —
+ * there is no stored "open/closed" state anywhere. Re-rendering is cheap, so a
+ * timer just re-renders the whole view every 30 seconds.
+ */
+(function () {
+  "use strict";
+
+  var DAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var DAYFULL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  // Season bands. bandOf() decides which one a market lands in; the copy is
+  // written for Central New York's growing season.
+  var BANDS = [
+    { t: "Year-round", d: "Open every week of the year — the only places to buy local in February.", k: "52 weeks" },
+    { t: "Spring into fall", d: "Opens while the tables are still greens, rhubarb and early roots, and runs to the last of the squash.", k: "~26 weeks" },
+    { t: "Summer into fall", d: "Peak season: strawberries and sweet corn through the final pumpkin weekend.", k: "16–21 weeks" }
+  ];
+
+  var MARKETS = [];
+  var SOURCE = {};
+  var state = {
+    view: "markets", days: new Set(), ben: new Set(),
+    openOnly: false, sort: "season", weekOffset: 0, expanded: new Set()
+  };
+
+  /* ---------------------------------------------------------------- data */
+
+  // markets.json -> the short field names the render code uses.
+  function normalize(rec) {
+    return {
+      id: rec.id,
+      name: rec.name,
+      loc: rec.place,
+      zip: rec.zip,
+      hoursText: rec.hoursText,
+      sched: rec.schedule.map(function (s) { return { d: s.days, o: s.open, c: s.close }; }),
+      season: rec.season ? { s: rec.season.start, e: rec.season.end } : null,
+      seasonText: rec.seasonText,
+      snap: rec.benefits.snap, fmnp: rec.benefits.fmnp,
+      fccIssued: rec.benefits.fccIssued, fccAccepted: rec.benefits.fccAccepted,
+      contact: rec.contact.name, phone: rec.contact.phone, url: rec.contact.url,
+      lat: rec.lat, lng: rec.lng
+    };
+  }
+
+  /* ------------------------------------------------------------ time math */
+
+  function now() { return new Date(); }
+  function atHour(d, h) {
+    var x = new Date(d);
+    x.setHours(Math.floor(h), Math.round((h % 1) * 60), 0, 0);
+    return x;
+  }
+  function seasonStart(m, y) { return new Date(y, m.season.s[0] - 1, m.season.s[1], 0, 0, 0, 0); }
+  function seasonEnd(m, y) { return new Date(y, m.season.e[0] - 1, m.season.e[1], 23, 59, 59, 999); }
+  function inSeason(m, d) {
+    if (!m.season) return true;
+    var y = d.getFullYear();
+    return d >= seasonStart(m, y) && d <= seasonEnd(m, y);
+  }
+  function slotsOn(m, dow) {
+    return m.sched.filter(function (s) { return s.d.indexOf(dow) !== -1; });
+  }
+  function fmtHour(h) {
+    var hh = Math.floor(h), mm = Math.round((h % 1) * 60), ap = hh >= 12 ? "pm" : "am";
+    var x = hh % 12; if (x === 0) x = 12;
+    return mm ? x + ":" + String(mm).padStart(2, "0") + ap : x + ap;
+  }
+  function sameDay(a, b) {
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  }
+  function dur(ms) {
+    var mins = Math.round(ms / 60000);
+    if (mins < 60) return mins + " min";
+    var h = Math.floor(mins / 60), m = mins % 60;
+    if (h < 24) return m ? h + "h " + m + "m" : h + "h";
+    var d = Math.round(h / 24);
+    return d === 1 ? "1 day" : d + " days";
+  }
+
+  // Walks forward a day at a time. 420 days covers the gap from the end of one
+  // season to the start of the next, plus slack for a leap year.
+  function nextOpening(m, from) {
+    for (var i = 0; i < 420; i++) {
+      var day = new Date(from.getFullYear(), from.getMonth(), from.getDate() + i);
+      var probe = new Date(day); probe.setHours(12, 0, 0, 0);
+      if (!inSeason(m, probe)) continue;
+      var slots = slotsOn(m, day.getDay()).slice().sort(function (a, b) { return a.o - b.o; });
+      for (var j = 0; j < slots.length; j++) {
+        var start = atHour(day, slots[j].o), end = atHour(day, slots[j].c);
+        if (end > from) return { start: start, end: end };
+      }
+    }
+    return null;
+  }
+
+  function statusOf(m, d) {
+    if (inSeason(m, d)) {
+      var slots = slotsOn(m, d.getDay());
+      for (var i = 0; i < slots.length; i++) {
+        var o = atHour(d, slots[i].o), c = atHour(d, slots[i].c);
+        if (d >= o && d < c) return { state: "open", closes: c };
+      }
+    }
+    var nx = nextOpening(m, d);
+    if (!nx) return { state: "off", ended: true };
+    return { state: (nx.start - d) <= 36 * 36e5 ? "soon" : "off", next: nx };
+  }
+
+  function statusLine(m, st, d) {
+    if (st.state === "open") {
+      return "<b>Open now</b> until " + fmtHour(st.closes.getHours() + st.closes.getMinutes() / 60) +
+        " — closes in " + dur(st.closes - d);
+    }
+    if (st.ended) return "Wrapped up for " + d.getFullYear() + " — back next season";
+    var n = st.next.start;
+    var tomorrow = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+    var when = sameDay(n, d) ? "today"
+      : sameDay(n, tomorrow) ? "tomorrow"
+        : DAY[n.getDay()] + ", " + MON[n.getMonth()] + " " + n.getDate();
+    return "Opens <b>" + when + " at " + fmtHour(n.getHours() + n.getMinutes() / 60) + "</b> — in " + dur(n - d);
+  }
+
+  /* --------------------------------------------------------- filter/sort */
+
+  function passes(m, d) {
+    if (state.openOnly && statusOf(m, d).state !== "open") return false;
+    if (state.days.size && !m.sched.some(function (s) {
+      return s.d.some(function (x) { return state.days.has(x); });
+    })) return false;
+    if (state.ben.has("snap") && !m.snap) return false;
+    if (state.ben.has("fmnp") && !m.fmnp) return false;
+    if (state.ben.has("fcc") && !m.fccAccepted) return false;
+    return true;
+  }
+
+  function bandOf(m) {
+    if (!m.season) return 0;          // year-round
+    return m.season.s[0] < 6 ? 1 : 2; // opens before June / June or later
+  }
+
+  function sortList(list, d) {
+    var c = list.slice(), y = d.getFullYear();
+    if (state.sort === "name") {
+      c.sort(function (a, b) { return a.name.localeCompare(b.name); });
+    } else if (state.sort === "next") {
+      c.sort(function (a, b) {
+        var A = nextOpening(a, d), B = nextOpening(b, d);
+        return (A ? A.start.getTime() : 8.64e15) - (B ? B.start.getTime() : 8.64e15);
+      });
+    } else if (state.sort === "closing") {
+      c.sort(function (a, b) {
+        var A = a.season ? seasonEnd(a, y) : new Date(y, 11, 31);
+        var B = b.season ? seasonEnd(b, y) : new Date(y, 11, 31);
+        return A - B;
+      });
+    } else {
+      c.sort(function (a, b) {
+        var bd = bandOf(a) - bandOf(b);
+        if (bd) return bd;
+        if (!a.season || !b.season) return a.sched[0].d[0] - b.sched[0].d[0];
+        return (a.season.s[0] * 100 + a.season.s[1]) - (b.season.s[0] * 100 + b.season.s[1]);
+      });
+    }
+    return c;
+  }
+
+  /* ------------------------------------------------------------- renders */
+
+  function renderLive(d) {
+    var openNow = MARKETS.filter(function (m) { return statusOf(m, d).state === "open"; });
+    var todayAll = MARKETS.filter(function (m) { return inSeason(m, d) && slotsOn(m, d.getDay()).length; });
+    var inSeasonCount = MARKETS.filter(function (m) { return inSeason(m, d); }).length;
+
+    var best = null, bestM = null;
+    MARKETS.forEach(function (m) {
+      var n = nextOpening(m, d);
+      if (n && (!best || n.start < best.start)) { best = n; bestM = m; }
+    });
+    var nextTxt = best
+      ? (sameDay(best.start, d) ? "Today" : DAY[best.start.getDay()] + " " + MON[best.start.getMonth()] + " " + best.start.getDate())
+        + " · " + fmtHour(best.start.getHours() + best.start.getMinutes() / 60)
+      : "—";
+
+    document.getElementById("live").innerHTML =
+      '<div><div class="k">' + DAYFULL[d.getDay()] + '</div><div class="v">' + MON[d.getMonth()] + " " + d.getDate() +
+        '<small>' + fmtHour(d.getHours() + d.getMinutes() / 60) + ' right now</small></div></div>' +
+      '<div><div class="k">Open this minute</div><div class="v">' + (openNow.length ? '<span class="pulse"></span>' : "") + openNow.length +
+        '<small>' + (openNow.length ? openNow.map(function (m) { return m.name.replace(" — ", " · "); }).join(", ") : "Nothing open at this hour") + '</small></div></div>' +
+      '<div><div class="k">' + (openNow.length ? "Next to open" : "Opening next") + '</div><div class="v">' + nextTxt +
+        '<small>' + (bestM ? bestM.name.replace(" — ", " · ") : "—") + '</small></div></div>' +
+      '<div><div class="k">In season today</div><div class="v">' + inSeasonCount + " of " + MARKETS.length +
+        '<small>' + todayAll.length + " selling on a " + DAY[d.getDay()] + '</small></div></div>';
+  }
+
+  function seasonBar(m, d) {
+    var y = d.getFullYear(), jan = new Date(y, 0, 1), dec = new Date(y, 11, 31, 23, 59, 59), span = dec - jan;
+    var s = m.season ? seasonStart(m, y) : jan, e = m.season ? seasonEnd(m, y) : dec;
+    var l = ((s - jan) / span) * 100, w = ((e - s) / span) * 100, t = ((d - jan) / span) * 100;
+    return '<div class="sbar"><div class="track"><div class="fill" style="left:' + l + '%;width:' + w + '%"></div>' +
+      '<div class="today" style="left:' + Math.min(99.5, Math.max(0, t)) + '%"></div></div>' +
+      '<div class="lab"><span>Jan</span><span><b>' + m.seasonText + '</b></span><span>Dec</span></div></div>';
+  }
+
+  function card(m, d) {
+    var st = statusOf(m, d);
+    var cls = st.state === "open" ? "is-open" : st.state === "soon" ? "is-soon" : "is-off";
+    var pill = st.state === "open" ? '<span class="status s-open">Open now</span>'
+      : st.state === "soon" ? '<span class="status s-soon">Opens soon</span>'
+        : st.ended ? '<span class="status s-off">Season over</span>'
+          : '<span class="status s-off">Closed</span>';
+    var isOpenDet = state.expanded.has(m.id);
+    var b = function (on, txt) { return '<span class="badge' + (on ? "" : " no") + '">' + (on ? "✓ " : "— ") + txt + '</span>'; };
+
+    return '<article class="card ' + cls + '" id="card-' + m.id + '">' +
+      '<button class="chead" type="button" data-toggle="' + m.id + '" aria-expanded="' + isOpenDet + '" aria-controls="det-' + m.id + '">' +
+        '<span class="cname">' + m.name + '<span class="cwhere">' + m.loc + '</span></span>' + pill + '</button>' +
+      '<div class="cbody">' +
+        '<div class="hours">' + m.hoursText + '</div>' +
+        '<div class="next">' + statusLine(m, st, d) + '</div>' +
+        seasonBar(m, d) +
+        '<div class="badges">' + b(m.snap, "SNAP/EBT") + b(m.fmnp, "WIC &amp; Senior FMNP") + b(m.fccAccepted, "Fresh Connect") + '</div>' +
+      '</div>' +
+      '<div class="details" id="det-' + m.id + '"' + (isOpenDet ? "" : " hidden") + '>' +
+        '<div class="row"><span class="k">Hours</span><span class="slots">' +
+          m.sched.map(function (s) {
+            return s.d.map(function (x) { return DAY[x]; }).join(", ") + " · " + fmtHour(s.o) + "–" + fmtHour(s.c);
+          }).join("<br>") + '</span></div>' +
+        '<div class="row"><span class="k">Season</span><span>' + m.seasonText + (m.season ? "" : ", every week of the year") + '</span></div>' +
+        '<div class="row"><span class="k">Address</span><span>' + m.loc + ", Syracuse NY " + m.zip + ' · ' +
+          '<a href="https://www.google.com/maps/search/?api=1&amp;query=' + m.lat + ',' + m.lng + '" target="_blank" rel="noopener">Directions</a></span></div>' +
+        '<div class="row"><span class="k">Contact</span><span>' + m.contact + ' · <a href="tel:+1' + m.phone + '">' +
+          m.phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3") + '</a></span></div>' +
+        (m.url ? '<div class="row"><span class="k">Website</span><span><a href="' + m.url + '" target="_blank" rel="noopener">' +
+          m.url.replace(/^https?:\/\//, "").replace(/\/$/, "") + '</a></span></div>' : "") +
+        (m.fccIssued ? '<div class="row"><span class="k">Note</span><span>Fresh Connect checks are issued here on site, not just accepted.</span></div>' : "") +
+      '</div></article>';
+  }
+
+  function renderMarkets(d) {
+    var list = MARKETS.filter(function (m) { return passes(m, d); });
+    document.getElementById("cnt").textContent = list.length;
+    var host = document.getElementById("view-markets");
+
+    if (!list.length) {
+      host.innerHTML = '<div class="empty">No market matches those filters. Try clearing the day or the “open this minute” filter.</div>';
+      return;
+    }
+    var sorted = sortList(list, d);
+    if (state.sort !== "season") {
+      host.innerHTML = '<div class="group"><div class="cards">' +
+        sorted.map(function (m) { return card(m, d); }).join("") + '</div></div>';
+      return;
+    }
+    var html = "";
+    [0, 1, 2].forEach(function (bi) {
+      var g = sorted.filter(function (m) { return bandOf(m) === bi; });
+      if (!g.length) return;
+      html += '<section class="group"><div class="ghead"><h2>' + BANDS[bi].t + '</h2>' +
+        '<span class="gmeta">' + g.length + " " + (g.length === 1 ? "market" : "markets") + " · " + BANDS[bi].k + '</span>' +
+        '<p>' + BANDS[bi].d + '</p></div><div class="cards">' +
+        g.map(function (m) { return card(m, d); }).join("") + '</div></section>';
+    });
+    host.innerHTML = html;
+  }
+
+  function renderWeek(d) {
+    var base = new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay() + state.weekOffset * 7);
+    var end = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 6);
+    var range = MON[base.getMonth()] + " " + base.getDate() + " – " + MON[end.getMonth()] + " " + end.getDate();
+    document.getElementById("wtitle").textContent =
+      (state.weekOffset === 0 ? "This week · " : "") + range + ", " + end.getFullYear();
+
+    var html = "";
+    for (var i = 0; i < 7; i++) {
+      var day = new Date(base.getFullYear(), base.getMonth(), base.getDate() + i);
+      var probe = new Date(day); probe.setHours(12, 0, 0, 0);
+      var items = [];
+      MARKETS.forEach(function (m) {
+        if (!inSeason(m, probe)) return;
+        slotsOn(m, day.getDay()).forEach(function (s) { items.push({ m: m, s: s }); });
+      });
+      items.sort(function (a, b) { return a.s.o - b.s.o; });
+
+      html += '<div class="day' + (sameDay(day, d) ? " today" : "") + '">' +
+        '<div class="dhead"><span class="dname">' + DAY[day.getDay()] + '</span><span class="dnum">' + day.getDate() + '</span></div>' +
+        (items.length
+          ? items.map(function (it) {
+              return '<button class="mchip" type="button" data-goto="' + it.m.id + '">' +
+                '<span class="mn">' + it.m.name.replace(" — ", " · ") + '</span>' +
+                '<span class="mt">' + fmtHour(it.s.o) + "–" + fmtHour(it.s.c) + '</span></button>';
+            }).join("")
+          : '<span class="dempty">No markets</span>') +
+        '</div>';
+    }
+    document.getElementById("week").innerHTML = html;
+  }
+
+  function renderTimeline(d) {
+    var y = d.getFullYear(), jan = new Date(y, 0, 1), dec = new Date(y, 11, 31, 23, 59, 59), span = dec - jan;
+    var pct = function (x) { return ((x - jan) / span) * 100; };
+    var rows = MARKETS.slice().sort(function (a, b) {
+      if (!a.season && !b.season) return 0;
+      if (!a.season) return -1;
+      if (!b.season) return 1;
+      return (a.season.s[0] * 100 + a.season.s[1]) - (b.season.s[0] * 100 + b.season.s[1]);
+    });
+    var grid = MON.map(function (_, i) { return '<i style="left:' + pct(new Date(y, i, 1)) + '%"></i>'; }).join("");
+
+    var html = "";
+    rows.forEach(function (m) {
+      var s = m.season ? seasonStart(m, y) : jan, e = m.season ? seasonEnd(m, y) : dec;
+      var l = pct(s), w = pct(e) - pct(s);
+      var parts = m.name.split(" — ");
+      html += '<div class="tlname">' + parts[0] + '<span>' + (parts[1] || m.hoursText.split(" ")[0]) + '</span></div>' +
+        '<div class="tlrow"><div class="tlgrid">' + grid + '</div>' +
+        '<div class="tlbar' + (m.season ? "" : " yr") + '" style="left:' + l + '%;width:' + w + '%">' + (w > 24 ? m.seasonText : "") + '</div>' +
+        '<div class="tlnow" style="left:' + pct(d) + '%"></div></div>';
+    });
+    html += '<div></div><div class="tlaxis">' +
+      MON.map(function (mo, i) { return '<span style="left:' + pct(new Date(y, i, 16)) + '%">' + mo + '</span>'; }).join("") + '</div>';
+    document.getElementById("tl").innerHTML = html;
+  }
+
+  function renderMap(d) {
+    // Markets sharing an address (the three regional-market days) become one pin.
+    var groups = [];
+    MARKETS.forEach(function (m) {
+      var g = groups.filter(function (g) { return g.lat === m.lat && g.lng === m.lng; })[0];
+      if (g) g.items.push(m); else groups.push({ lat: m.lat, lng: m.lng, items: [m] });
+    });
+    var lats = groups.map(function (g) { return g.lat; }), lngs = groups.map(function (g) { return g.lng; });
+    var minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats);
+    var minLng = Math.min.apply(null, lngs), maxLng = Math.max.apply(null, lngs);
+    var W = 640, H = 500, PX = 58, PY = 46;
+    var X = function (lng) { return PX + ((lng - minLng) / (maxLng - minLng || 1)) * (W - 2 * PX); };
+    var Y = function (lat) { return H - PY - ((lat - minLat) / (maxLat - minLat || 1)) * (H - 2 * PY); };
+
+    var sorted = groups.slice().sort(function (a, b) { return b.lat - a.lat; })
+      .map(function (g, i) { g.n = i + 1; return g; });
+
+    var pins = "";
+    sorted.forEach(function (g) {
+      var anyOpen = g.items.some(function (m) { return statusOf(m, d).state === "open"; });
+      var cx = X(g.lng), cy = Y(g.lat), left = cx > W * 0.6;
+      var label = g.items.length > 1 ? g.items[0].name.split(" — ")[0] : g.items[0].name;
+      var sub = g.items.length > 1 ? g.items.length + " market days a week" : g.items[0].hoursText.split(" · ")[0];
+      pins += '<g class="pin" data-goto="' + g.items[0].id + '" tabindex="0" role="button" aria-label="' + label + '">' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="14" fill="' + (anyOpen ? "var(--open-wash)" : "var(--accent-wash)") + '"></circle>' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="8" fill="' + (anyOpen ? "var(--open)" : "var(--accent)") + '"></circle>' +
+        '<text x="' + cx + '" y="' + (cy + 3.4) + '" text-anchor="middle" font-family="DM Mono, monospace" font-size="9.5" fill="var(--on-accent)">' + g.n + '</text>' +
+        '<text x="' + (left ? cx - 20 : cx + 20) + '" y="' + (cy - 1) + '" text-anchor="' + (left ? "end" : "start") + '" font-family="Karla, sans-serif" font-size="12" font-weight="700" fill="var(--ink)">' + label + '</text>' +
+        '<text x="' + (left ? cx - 20 : cx + 20) + '" y="' + (cy + 12) + '" text-anchor="' + (left ? "end" : "start") + '" font-family="DM Mono, monospace" font-size="10" fill="var(--muted)">' + sub + '</text></g>';
+    });
+
+    document.getElementById("mapbox").innerHTML =
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Schematic map of farmers markets">' +
+      '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="var(--surface-2)" rx="8"></rect>' +
+      [1, 2, 3, 4].map(function (i) { return '<line x1="0" y1="' + (H * i / 5) + '" x2="' + W + '" y2="' + (H * i / 5) + '" stroke="var(--line-2)" stroke-width="1"></line>'; }).join("") +
+      [1, 2, 3, 4].map(function (i) { return '<line x1="' + (W * i / 5) + '" y1="0" x2="' + (W * i / 5) + '" y2="' + H + '" stroke="var(--line-2)" stroke-width="1"></line>'; }).join("") +
+      '<line x1="30" y1="52" x2="30" y2="26" stroke="var(--muted)" stroke-width="1.5"></line>' +
+      '<polygon points="30,20 26.3,29 33.7,29" fill="var(--muted)"></polygon>' +
+      '<text x="30" y="68" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="var(--muted)">N</text>' +
+      pins + '</svg>';
+
+    document.getElementById("maplist").innerHTML = sorted.map(function (g) {
+      var anyOpen = g.items.some(function (m) { return statusOf(m, d).state === "open"; });
+      var label = g.items.length > 1 ? g.items[0].name.split(" — ")[0] : g.items[0].name;
+      return '<button class="mapitem" type="button" data-goto="' + g.items[0].id + '">' +
+        '<span class="idx">' + g.n + '</span>' +
+        '<span class="mi-n">' + label + '<span class="mi-s">' +
+          g.items.map(function (m) { return m.hoursText.split(" · ")[0]; }).join(" · ") + '</span></span>' +
+        '<span class="status ' + (anyOpen ? "s-open" : "s-off") + '">' + (anyOpen ? "Open" : "Closed") + '</span></button>';
+    }).join("");
+  }
+
+  function renderAll() {
+    var d = now();
+    renderLive(d);
+    if (state.view === "markets") renderMarkets(d);
+    if (state.view === "week") renderWeek(d);
+    if (state.view === "season") renderTimeline(d);
+    if (state.view === "map") renderMap(d);
+  }
+
+  function setView(v) {
+    state.view = v;
+    document.querySelectorAll(".tab").forEach(function (t) {
+      t.setAttribute("aria-selected", String(t.dataset.view === v));
+    });
+    ["markets", "week", "season", "map"].forEach(function (k) {
+      document.getElementById("view-" + k).hidden = (k !== v);
+    });
+    document.getElementById("filters").hidden = (v === "week" || v === "season");
+    renderAll();
+  }
+
+  function clearFilters() {
+    state.days.clear(); state.ben.clear(); state.openOnly = false;
+    document.querySelectorAll("[data-day],[data-ben],[data-open]").forEach(function (b) {
+      b.setAttribute("aria-pressed", "false");
+    });
+  }
+
+  /* ---------------------------------------------------------------- boot */
+
+  function wire() {
+    document.getElementById("dayChips").innerHTML = DAY.map(function (n, i) {
+      return '<button class="chip day" type="button" data-day="' + i + '" aria-pressed="false">' + n + '</button>';
+    }).join("");
+
+    // One delegated handler: every view is re-rendered wholesale, so binding
+    // to the elements themselves would mean rebinding on each render.
+    document.addEventListener("click", function (e) {
+      var tab = e.target.closest(".tab");
+      if (tab) { setView(tab.dataset.view); return; }
+
+      var day = e.target.closest("[data-day]");
+      if (day) {
+        var i = +day.dataset.day;
+        state.days.has(i) ? state.days.delete(i) : state.days.add(i);
+        day.setAttribute("aria-pressed", String(state.days.has(i)));
+        renderAll(); return;
+      }
+      var ben = e.target.closest("[data-ben]");
+      if (ben) {
+        var k = ben.dataset.ben;
+        state.ben.has(k) ? state.ben.delete(k) : state.ben.add(k);
+        ben.setAttribute("aria-pressed", String(state.ben.has(k)));
+        renderAll(); return;
+      }
+      var op = e.target.closest("[data-open]");
+      if (op) {
+        state.openOnly = !state.openOnly;
+        op.setAttribute("aria-pressed", String(state.openOnly));
+        renderAll(); return;
+      }
+      var tog = e.target.closest("[data-toggle]");
+      if (tog) {
+        var id = tog.dataset.toggle;
+        state.expanded.has(id) ? state.expanded.delete(id) : state.expanded.add(id);
+        var det = document.getElementById("det-" + id);
+        if (det) {
+          det.hidden = !state.expanded.has(id);
+          tog.setAttribute("aria-expanded", String(state.expanded.has(id)));
+        }
+        return;
+      }
+      var go = e.target.closest("[data-goto]");
+      if (go) {
+        // Jumping from the week grid or map: clear filters first, or the card
+        // being jumped to might be filtered out of the list.
+        var gid = go.dataset.goto;
+        state.expanded.add(gid);
+        clearFilters();
+        setView("markets");
+        var el = document.getElementById("card-" + gid);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (el.animate) {
+            el.animate([{ boxShadow: "0 0 0 3px var(--accent)" }, { boxShadow: "0 0 0 0 rgba(0,0,0,0)" }],
+              { duration: 1500, easing: "ease-out" });
+          }
+        }
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        var p = e.target.closest(".pin");
+        if (p) { e.preventDefault(); p.dispatchEvent(new MouseEvent("click", { bubbles: true })); }
+      }
+    });
+
+    document.getElementById("sortSel").addEventListener("change", function (e) {
+      state.sort = e.target.value; renderAll();
+    });
+    document.getElementById("reset").addEventListener("click", function () {
+      clearFilters();
+      state.sort = "season";
+      document.getElementById("sortSel").value = "season";
+      renderAll();
+    });
+    document.getElementById("wprev").addEventListener("click", function () { state.weekOffset--; renderWeek(now()); });
+    document.getElementById("wnext").addEventListener("click", function () { state.weekOffset++; renderWeek(now()); });
+  }
+
+  function start(data) {
+    MARKETS = data.markets.map(normalize);
+    SOURCE = data.source || {};
+
+    var county = SOURCE.county || "Onondaga";
+    var city = (data.markets[0] && data.markets[0].city) || "Syracuse";
+    document.getElementById("eyebrow").textContent = county + " County · " + (data.seasonYear || new Date().getFullYear()) + " season";
+    document.getElementById("headline").innerHTML = city + " <em>Farmers Markets</em>";
+    document.getElementById("deck").textContent =
+      "All " + MARKETS.length + " markets and farm stands in the city, sorted by how long their season runs — " +
+      "with live opening hours, this week's schedule, and who takes SNAP and WIC/Senior coupons.";
+    document.getElementById("credit").textContent =
+      "Source: " + (SOURCE.dataset || "NYS farmers market dataset") + ", " +
+      (SOURCE.publisher || "NYS Dept. of Agriculture & Markets") + " — " + county + " County records.";
+
+    document.getElementById("boot").hidden = true;
+    document.getElementById("app").hidden = false;
+
+    wire();
+    renderAll();
+    setInterval(renderAll, 30000);
+  }
+
+  function fail(message, hint) {
+    var boot = document.getElementById("boot");
+    boot.innerHTML = "<p>" + message + "</p>" + (hint ? "<code>" + hint + "</code>" : "");
+  }
+
+  // Bundled build hands the data over directly; dev build fetches it.
+  if (window.__MARKET_DATA__) {
+    start(window.__MARKET_DATA__);
+  } else {
+    fetch("data/markets.json")
+      .then(function (r) {
+        if (!r.ok) throw new Error(r.status + " " + r.statusText);
+        return r.json();
+      })
+      .then(start)
+      .catch(function () {
+        fail("Couldn't load data/markets.json. If you opened this file directly, start the local server instead:",
+          "python3 scripts/serve.py");
+      });
+  }
+})();
+</script>
